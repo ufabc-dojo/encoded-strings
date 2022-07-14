@@ -1,0 +1,16 @@
+name: Format test
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: dtolnay/rust-toolchain@v1
+      with:
+        toolchain: nightly
+        components: rustfmt
+    - name: Check Format
+      run: cargo fmt -- --check
