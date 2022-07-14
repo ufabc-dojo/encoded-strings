@@ -104,7 +104,7 @@ mod tests {
     }
 
     #[test]
-    fn from_utf8859_1_works() {
+    fn from_iso8859_1_works() {
         // Good case
         let s = Iso8859_1String::from_iso8859_1(vec![0x41, 0x42, 0x43]).unwrap();
         assert_eq!(s.capacity(), 3);
@@ -112,7 +112,7 @@ mod tests {
 
         // Bad case
         // Contains invalid characters
-        let res = Iso8859_1String::from_iso8859_1(vec![0x41, 0x42, 0x00, 0x44]);
+        let res = Iso8859_1String::from_iso8859_1(vec![0x41, 0x42, 0x01, 0x44]);
         assert!(res.is_err()); // FIXME: Ideally, we should have a more specific error type checking here.
     }
 
