@@ -28,7 +28,7 @@ jobs:
       uses: actions-rs/cargo@v1
       with:
         command: doc
-        args: -Zrustdoc-map
+        args: --workspace -Zrustdoc-map
       env:
         RUSTDOCFLAGS: --cfg _doc
 
