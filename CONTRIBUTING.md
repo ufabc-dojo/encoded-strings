@@ -59,13 +59,14 @@ The scope of commits that we use are:
 #### Feat, Fix and Refactor
 
 - `<name of encode-crate>`: For changes that affect that encode crate
-- `<name of the module>`: For changes that affect modules not exposed to C
+- `<name of the module>`: For changes that affect module
 
 #### Chore
 
 - `version`: For changes that affect versioning
 - `ide`: For changes that affect text editors and IDE configuration
 - `deps`: For changes that effect dependencies version
+- `<name of encode-crate>`: For changes that affect that encode crate
 
 #### Style
 
