@@ -6,7 +6,8 @@
 //! converting to strings, and several error types that may result from
 //! working with [`IsoLatin6String`]s.
 
-use std::fmt;
+pub mod char;
+pub use crate::{char::IsoLatin6Char, str::IsoLatin6Str};
 
 /// A ISO8859-1 encoded, growable string.
 ///
