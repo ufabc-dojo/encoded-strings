@@ -41,6 +41,7 @@ impl IsoLatin1Char {
     ///
     /// TODO
     pub fn is_alphabetic(&self) -> bool {
+
         todo!()
     }
 
@@ -139,7 +140,7 @@ impl IsoLatin1Char {
     /// TODO
     /// ```
     pub fn is_numeric(&self) -> bool {
-        todo!()
+        self >= &IsoLatin1Char(0x30)  &&self <= &IsoLatin1Char(0x39)
     }
 
     /// Returns `true` if this character has the `White_Space` property.
@@ -344,7 +345,6 @@ mod api_tests {
         for byte in b'0'..=b'9' {
             assert!(IsoLatin1Char(byte).is_numeric());
         }
-        todo!()
     }
 
     #[test]
