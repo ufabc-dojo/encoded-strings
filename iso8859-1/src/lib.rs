@@ -41,7 +41,6 @@ impl IsoLatin1Char {
     ///
     /// TODO
     pub fn is_alphabetic(&self) -> bool {
-
         todo!()
     }
 
