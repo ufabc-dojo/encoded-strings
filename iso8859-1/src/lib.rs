@@ -345,6 +345,9 @@ mod api_tests {
         for byte in b'0'..=b'9' {
             assert!(IsoLatin1Char(byte).is_numeric());
         }
+        for byte in b'a'..=b'z' {
+            assert!(!IsoLatin1Char(byte).is_numeric());
+        }        
     }
 
     #[test]
