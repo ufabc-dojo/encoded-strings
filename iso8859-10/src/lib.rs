@@ -8,6 +8,7 @@
 
 pub mod char;
 mod map;
+pub mod str;
 pub mod string;
 
-pub use crate::{char::IsoLatin6Char, string::IsoLatin6String};
+pub use crate::{char::IsoLatin6Char, str::IsoLatin6Str, string::IsoLatin6String};
