@@ -183,6 +183,77 @@ impl IsoLatin6Str {
     }
 }
 
+impl fmt::Debug for IsoLatin6Str {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_fmt(format_args!(r#""{}""#, self))
+    }
+}
+
+impl fmt::Display for IsoLatin6Str {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        #[inline(always)]
+        fn write(f: &mut fmt::Formatter<'_>, bytes: &[IsoLatin6Char]) -> Result<usize, fmt::Error> {
+            let mut ammount_writed = 0;
+            for &ch in bytes {
+                f.write_fmt(format_args!("{}", ch))?;
+                ammount_writed += 1;
+            }
+            Ok(ammount_writed)
+        }
+
+        #[inline(always)]
+        fn write_pads(f: &mut fmt::Formatter, num: usize) -> fmt::Result {
+            let fill = f.fill();
+            for _ in 0..num {
+                f.write_fmt(format_args!("{}", fill))?;
+            }
+            Ok(())
+        }
+
+        // SAFETY: `IsoLatin6Char` has the same representation of `u8`s, and therefore safe to
+        // transmute.
+        let bytes = unsafe { mem::transmute(&self.bytes) };
+
+        if let Some(align) = f.align() {
+            let width = f.width().unwrap_or(0);
+            let will_write = self.bytes.len();
+            let remaining_pads = width.saturating_sub(will_write);
+
+            match align {
+                fmt::Alignment::Left => {
+                    let writed = write(f, bytes)?;
+                    debug_assert_eq!(will_write, writed);
+                    write_pads(f, remaining_pads)?;
+                },
+                fmt::Alignment::Right => {
+                    write_pads(f, remaining_pads)?;
+                    let writed = write(f, bytes)?;
+                    debug_assert_eq!(will_write, writed);
+                },
+                fmt::Alignment::Center => {
+                    let half = remaining_pads / 2;
+                    write_pads(f, half)?;
+                    let writed = write(f, bytes)?;
+                    debug_assert_eq!(will_write, writed);
+                    write_pads(
+                        f,
+                        if remaining_pads % 2 == 0 {
+                            half
+                        } else {
+                            half + 1
+                        },
+                    )?;
+                },
+            }
+            Ok(())
+        } else {
+            write(f, bytes)?;
+            Ok(())
+        }
+    }
+}
+
+
 #[cfg(test)]
 mod api_tests {
     use super::*;
