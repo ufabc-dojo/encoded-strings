@@ -3,6 +3,8 @@ use core::{
     ops::{Deref, DerefMut},
 };
 
+use crate::IsoLatin6Str;
+
 use super::map;
 
 
@@ -280,6 +282,23 @@ impl IsoLatin6String {
     }
 }
 
+impl Deref for IsoLatin6String {
+    type Target = IsoLatin6Str;
+
+    #[inline]
+    fn deref(&self) -> &Self::Target {
+        // SAFETY: `IsoLatin6String` have the same memory representation as `IsoLatin6Str`
+        unsafe { mem::transmute(self.bytes.as_slice()) }
+    }
+}
+
+impl DerefMut for IsoLatin6String {
+    #[inline]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        // SAFETY: `IsoLatin6String` have the same memory representation as `IsoLatin6Str`
+        unsafe { mem::transmute(self.bytes.as_mut_slice()) }
+    }
+}
 /// Docs: TODO
 /// Tip: You can use the docs of `std::string::String` to get a better idea and inspiration
 #[derive(Debug)]
