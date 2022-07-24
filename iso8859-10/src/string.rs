@@ -299,6 +299,19 @@ impl DerefMut for IsoLatin6String {
         unsafe { mem::transmute(self.bytes.as_mut_slice()) }
     }
 }
+
+impl fmt::Debug for IsoLatin6String {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        <IsoLatin6Str as fmt::Debug>::fmt(self.deref(), f)
+    }
+}
+
+impl fmt::Display for IsoLatin6String {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        <IsoLatin6Str as fmt::Display>::fmt(self.deref(), f)
+    }
+}
+
 /// Docs: TODO
 /// Tip: You can use the docs of `std::string::String` to get a better idea and inspiration
 #[derive(Debug)]
