@@ -139,7 +139,13 @@ impl IsoLatin1Char {
     /// TODO
     /// ```
     pub fn is_numeric(&self) -> bool {
-        self >= &IsoLatin1Char(0x30) && self <= &IsoLatin1Char(0x39)
+        match self.0 {
+            x if x >= 0x30  && x <= 0x39 => true, // between 0 to 9
+            x if x >= 0x00BC  && x <= 0x00BE => true, // between ¼ to ¾
+            x if x >= 0x00B2  && x <= 0x00B3 => true, // between ² to ³
+            x if x == 0x00B9  => true, // only ¹
+            _ => false
+        }
     }
 
     /// Returns `true` if this character has the `White_Space` property.
