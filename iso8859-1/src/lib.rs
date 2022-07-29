@@ -141,9 +141,9 @@ impl IsoLatin1Char {
     pub fn is_numeric(&self) -> bool {
         match self.0 {
             0x30..=0x39 |      // between 0 to 9
-            0x00BC..=0x00BE |  // between ¼ to ¾
-            0x00B2..=0x00B3 |  // between ² to ³
-            0x00B9 => true,    // only ¹
+            0xBC..=0xBE |  // between ¼ to ¾
+            0xB2..=0xB3 |  // between ² to ³
+            0xB9 => true,    // only ¹
             _ => false
         }
     }
@@ -348,7 +348,7 @@ mod api_tests {
     #[test]
     fn is_numeric() {
         let numerics: Vec<u8> = [
-            [0x30..=0x39, 0xBC..=0xBE, 0x00B2..=0x00B3]
+            [0x30..=0x39, 0xBC..=0xBE, 0xB2..=0xB3]
                 .into_iter()
                 .map(|range| range.collect::<Vec<_>>())
                 .flatten()
