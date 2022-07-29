@@ -140,10 +140,10 @@ impl IsoLatin1Char {
     /// ```
     pub fn is_numeric(&self) -> bool {
         match self.0 {
-            x if x >= 0x30  && x <= 0x39 => true, // between 0 to 9
-            x if x >= 0x00BC  && x <= 0x00BE => true, // between ¼ to ¾
-            x if x >= 0x00B2  && x <= 0x00B3 => true, // between ² to ³
-            x if x == 0x00B9  => true, // only ¹
+            0x30..=0x39 |      // between 0 to 9
+            0x00BC..=0x00BE |  // between ¼ to ¾
+            0x00B2..=0x00B3 |  // between ² to ³
+            0x00B9 => true,    // only ¹
             _ => false
         }
     }
@@ -302,6 +302,8 @@ pub enum IsoLatin1CharError {
 }
 #[cfg(test)]
 mod api_tests {
+    use core::num;
+
     use super::*;
 
     #[test]
@@ -347,12 +349,22 @@ mod api_tests {
 
     #[test]
     fn is_numeric() {
-        for byte in b'0'..=b'9' {
-            assert!(IsoLatin1Char(byte).is_numeric());
+        let numerics: Vec<u8> = [
+            [0x30..=0x39, 0xBC..=0xBE, 0x00B2..=0x00B3]
+                .into_iter()
+                .map(|range| range.collect::<Vec<_>>())
+                .flatten()
+                .collect(),
+            vec![0xB9],
+        ]
+        .concat();
+        for byte in 0x00..=0xFF {
+            if numerics.contains(&byte) {
+                assert!(IsoLatin1Char(byte).is_numeric());
+            } else {
+                assert!(!IsoLatin1Char(byte).is_numeric());
+            }
         }
-        for byte in b'a'..=b'z' {
-            assert!(!IsoLatin1Char(byte).is_numeric());
-        }        
     }
 
     #[test]
@@ -395,7 +407,7 @@ mod trait_tests {
     use super::*;
 
     static LAST_PART_OF_ISO8859: [char; 96] = [
-        '\u{A0}', 'Ą', 'Ē', 'Ģ', 'Ī', 'Ĩ', 'Ķ', '§', 'Ļ', 'Đ', 'Š', 'Ŧ', 'Ž', '\u{AD}', 'Ū', 'Ŋ',
+        '\u{A0}', '¡', '¢', 'Ģ', 'Ī', 'Ĩ', 'Ķ', '§', 'Ļ', 'Đ', 'Š', 'Ŧ', 'Ž', '\u{AD}', 'Ū', 'Ŋ',
         '°', 'ą', 'ē', 'ģ', 'ī', 'ĩ', 'ķ', '·', 'ļ', 'đ', 'š', 'ŧ', 'ž', '―', 'ū', 'ŋ', 'Ā', 'Á',
         'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Į', 'Č', 'É', 'Ę', 'Ë', 'Ė', 'Í', 'Î', 'Ï', 'Ð', 'Ņ', 'Ō', 'Ó',
         'Ô', 'Õ', 'Ö', 'Ũ', 'Ø', 'Ų', 'Ú', 'Û', 'Ü', 'Ý', 'Þ', 'ß', 'ā', 'á', 'â', 'ã', 'ä', 'å',
@@ -488,7 +500,6 @@ mod trait_tests {
         todo!()
     }
 }
-
 
 /// A ISO8859-1 encoded, growable string.
 ///
