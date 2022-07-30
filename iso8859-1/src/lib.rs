@@ -139,7 +139,13 @@ impl IsoLatin1Char {
     /// TODO
     /// ```
     pub fn is_numeric(&self) -> bool {
-        todo!()
+        match self.0 {
+            0x30..=0x39 |      // between 0 to 9
+            0xBC..=0xBE |  // between ¼ to ¾
+            0xB2..=0xB3 |  // between ² to ³
+            0xB9 => true,    // only ¹
+            _ => false
+        }
     }
 
     /// Returns `true` if this character has the `White_Space` property.
@@ -341,10 +347,22 @@ mod api_tests {
 
     #[test]
     fn is_numeric() {
-        for byte in b'0'..=b'9' {
-            assert!(IsoLatin1Char(byte).is_numeric());
+        let numerics: Vec<u8> = [
+            [0x30..=0x39, 0xBC..=0xBE, 0xB2..=0xB3]
+                .into_iter()
+                .map(|range| range.collect::<Vec<_>>())
+                .flatten()
+                .collect(),
+            vec![0xB9],
+        ]
+        .concat();
+        for byte in 0x00..=0xFF {
+            if numerics.contains(&byte) {
+                assert!(IsoLatin1Char(byte).is_numeric());
+            } else {
+                assert!(!IsoLatin1Char(byte).is_numeric());
+            }
         }
-        todo!()
     }
 
     #[test]
@@ -480,7 +498,6 @@ mod trait_tests {
         todo!()
     }
 }
-
 
 /// A ISO8859-1 encoded, growable string.
 ///
